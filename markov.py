@@ -1,18 +1,24 @@
 """Generate Markov text from text files."""
 
+import sys #allows you to pass a file thru the terminal
+
 from random import choice
 
 
-def open_and_read_file(file_path):
+def open_and_read_file(filepath):
     """Take file path as string; return text as string.
 
     Takes a string that is a file path, opens the file, and turns
     the file's contents as one string of text.
     """
 
-    # your code goes here
+    f = open(filepath)
+    text = f.read()
+    f.close()
 
-    return 'Contents of your file as one long string'
+    #file_input = open(file_path).read()
+
+    return text
 
 
 def make_chains(text_string):
@@ -40,19 +46,36 @@ def make_chains(text_string):
         [None]
     """
 
+    
     chains = {}
 
-    # your code goes here
+    words = text_string.split()
+   
+    words.append(None)
+   
+    for i in range(len(words) - 2):
+        key = (words[i], words[i + 1]) #creating tuple
+        value = words[i + 2] #third word after tuple
+
+        if key not in chains:
+            chains[key] = [] #adding new keys to chains if not already present
+        
+        chains[key].append(value)
+        #sorted(chains.keys())
 
     return chains
 
 
 def make_text(chains):
     """Return text from chains."""
+    key = choice(list(chains.keys()))
+    words = [key[0], key[1]]
+    word = choice(chains[key])
 
-    words = []
-
-    # your code goes here
+    while word is not None:
+        key = (key[1], word)
+        words.append(word)
+        word = choice(chains[key])
 
     return ' '.join(words)
 
@@ -65,7 +88,10 @@ input_text = open_and_read_file(input_path)
 # Get a Markov chain
 chains = make_chains(input_text)
 
-# Produce random text
+#Produce random text
 random_text = make_text(chains)
 
-print(random_text)
+print(make_chains(input_text))
+print(make_text(chains))
+
+   
